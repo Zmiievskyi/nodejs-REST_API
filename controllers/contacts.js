@@ -1,8 +1,8 @@
 const { HttpError, ctrlWrapper } = require("../helpers/index");
-const  Api  = require("../models/contacts");
+const service = require("../service/index");
 
 const getAll = async (req, res) => {
-  const listContacts = await Api.listContacts();
+  const listContacts = await service.getAllContacts();
   if (!listContacts) {
     throw HttpError(400);
   }
@@ -11,7 +11,7 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   const { contactId } = req.params;
-  const contactById = await Api.getContactById(contactId);
+  const contactById = await service.getContactById(contactId);
   if (!contactById) {
     throw HttpError(404, `Contact with ${contactId} not found`);
   }
@@ -19,12 +19,12 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  const addContact = await Api.addContact(req.body);
-  res.status(201).json({ message: "Added user", user: addContact, code: 201 });
+  const addContact = await service.addContact(req.body);
+  res.status(201).json({ message: "user added", code: 201, user: addContact});
 };
 
 const deleteById = async (req, res) => {
-  const removedContact = await Api.removeContact(req.params.contactId);
+  const removedContact = await service.deleteContactById(req.params.contactId);
   if (!removedContact) {
     throw HttpError(404, `Contact with ${req.params.contactId} not found`);
   }
@@ -37,9 +37,9 @@ const deleteById = async (req, res) => {
 
 const update = async (req, res) => {
   if (Object.keys(req.body).length < 1) {
-    throw HttpError(400, "missing fields");
+    throw HttpError(400, "missing some of fields");
   }
-  const refreshedContact = await Api.updateContact(
+  const refreshedContact = await service.updateContact(
     req.params.contactId,
     req.body
   );
@@ -51,10 +51,27 @@ const update = async (req, res) => {
   });
 };
 
+const updateStatus = async (req, res) => {
+  if (Object.keys(req.body).length < 1) {
+    throw HttpError(400, "missing field favorite");
+  }
+  const refreshedStatus = await service.updateStatusContact(
+    req.params.contactId,
+    req.body
+  );
+  if (!refreshedStatus) throw HttpError(404, "not found");
+  res.json({
+    message: "Startus chanched",
+    code: 200,
+    contact: refreshedStatus,
+  });
+};
+
 module.exports = {
   getAll: ctrlWrapper(getAll),
   getById: ctrlWrapper(getById),
   add: ctrlWrapper(add),
   deleteById: ctrlWrapper(deleteById),
   update: ctrlWrapper(update),
+  updateStatus: ctrlWrapper(updateStatus)
 };

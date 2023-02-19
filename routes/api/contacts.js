@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const ctrl = require("../../controllers/contacts");
+// const ctrl = require("../../service/");
+
 const schema = require('../../schemas/index')
 const { validateBody } = require("../../middlewares/index");
 
@@ -13,5 +15,7 @@ router.post("/", validateBody(schema.addSchema), ctrl.add);
 router.delete("/:contactId", ctrl.deleteById);
 
 router.put("/:contactId", ctrl.update);
+
+router.patch("/:contactId/favorite", ctrl.update);
 
 module.exports = router;
