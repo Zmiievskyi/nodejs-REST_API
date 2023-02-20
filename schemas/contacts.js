@@ -1,6 +1,7 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const {handleSchemaValidationErrors} = require('../helpers')
 
 const contactSchema = new Schema(
   {
@@ -22,7 +23,9 @@ const contactSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-const Contact = mongoose.model("contact", contactSchema);
+
+contactSchema.post("save", handleSchemaValidationErrors);
+
 
 
 
@@ -33,8 +36,16 @@ const addSchema = Joi.object({
   favorite: Joi.bool().default(false)
 });
 
+const updateFavorite = Joi.object({
+  favorite: Joi.bool().default(false).required()
+});
+
+
+const Contact = mongoose.model("contact", contactSchema);
+
 
 module.exports = {
   addSchema,
+  updateFavorite,
   Contact,
 };

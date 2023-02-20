@@ -1,7 +1,7 @@
 const { Contact } = require("../schemas/index");
 
 const getAllContacts = async () => {
-  const contact = await Contact.find();
+  const contact = await Contact.find({},"name email phone");
   return contact;
 };
 
