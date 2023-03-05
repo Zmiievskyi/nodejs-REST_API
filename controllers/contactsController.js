@@ -2,7 +2,6 @@ const { HttpError, asyncCtrlWrapper } = require("../helpers");
 const service = require("../service");
 
 const getAll = async (req, res) => {
-  // const { _id } = req.user;
   const listContacts = await service.getAllContacts(req);
   if (!listContacts) {
     throw HttpError(400);

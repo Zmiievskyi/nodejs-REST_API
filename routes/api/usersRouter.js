@@ -8,5 +8,7 @@ const { authMiddleware } = require("../../middlewares");
 
 
 router.get("/current", authMiddleware, ctrl.getCurrent);
+router.patch("/:id", authMiddleware, ctrl.changeSubscription);
+
 
 module.exports = router;

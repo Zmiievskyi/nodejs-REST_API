@@ -1,13 +1,27 @@
 const { Contact } = require("../schemas/index");
 
-const getAllContacts = (req) => {
+const getAllContacts = async (req) => {
   const { _id } = req.user;
-  const { page = 1, limit = 5 } = req.query;
+  const { page = 1, limit = 5, favorite = false } = req.query;
+  if (favorite) {
+    return Contact.find({ owner: _id, favorite }, "name email phone").populate(
+      "owner",
+      "_id name email"
+    );
+  }
   const skip = (page - 1) * limit;
-  return Contact.find({ owner: _id }, "name email phone", {
+  const user = await Contact.find({ owner: _id }, "name email phone", {
     skip,
     limit: Number(limit),
   }).populate("owner", "_id name email");
+
+  if (user.length < 1) {
+    return Contact.find({ owner: _id }, "name email phone", {
+      skip: 0,
+      limit: Number(limit),
+    }).populate("owner", "_id name email");
+  }
+  return user;
 };
 
 const getContactById = (id) => {
