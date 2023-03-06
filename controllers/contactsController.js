@@ -1,8 +1,8 @@
-const { HttpError, ctrlWrapper } = require("../helpers/index");
-const service = require("../service/index");
+const { HttpError, asyncCtrlWrapper } = require("../helpers");
+const service = require("../service");
 
 const getAll = async (req, res) => {
-  const listContacts = await service.getAllContacts();
+  const listContacts = await service.getAllContacts(req);
   if (!listContacts) {
     throw HttpError(400);
   }
@@ -19,8 +19,9 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  const addContact = await service.addContact(req.body);
-  res.status(201).json({ message: "user added", code: 201, user: addContact});
+  const { _id } = req.user;
+  const addContact = await service.addContact(req.body, _id);
+  res.status(201).json({ message: "user added", code: 201, user: addContact });
 };
 
 const deleteById = async (req, res) => {
@@ -68,10 +69,10 @@ const updateStatus = async (req, res) => {
 };
 
 module.exports = {
-  getAll: ctrlWrapper(getAll),
-  getById: ctrlWrapper(getById),
-  add: ctrlWrapper(add),
-  deleteById: ctrlWrapper(deleteById),
-  update: ctrlWrapper(update),
-  updateStatus: ctrlWrapper(updateStatus)
+  getAll: asyncCtrlWrapper(getAll),
+  getById: asyncCtrlWrapper(getById),
+  add: asyncCtrlWrapper(add),
+  deleteById: asyncCtrlWrapper(deleteById),
+  update: asyncCtrlWrapper(update),
+  updateStatus: asyncCtrlWrapper(updateStatus),
 };

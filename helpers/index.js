@@ -1,8 +1,10 @@
 const HttpError = require("./HttpError");
-const ctrlWrapper = require("./ctrlWrapper");
+const asyncCtrlWrapper = require("./asyncCtrlWrapper");
 const handleSchemaValidationErrors = require("./handleSchemaValidationErrors");
+
+
 module.exports = {
   HttpError,
-  ctrlWrapper,
+  asyncCtrlWrapper,
   handleSchemaValidationErrors,
 };
