@@ -1,6 +1,8 @@
 // const bcrypt = require("bcrypt");
 const Jwt = require("jsonwebtoken");
 const { Conflict, Unauthorized } = require("http-errors");
+const gravatar = require("gravatar");
+
 const { User } = require("../schemas/index");
 const HttpError = require("../helpers/HttpError");
 
@@ -9,7 +11,9 @@ const registration = async (name, email, password) => {
   if (user) {
     throw new Conflict(`user with ${email} is already exist`);
   }
-  return User.create({ name, email, password });
+  
+  const avatarUrl = gravatar.url(email, { protocol: "http", s: "100" });
+  return User.create({ name, email, password, avatarUrl });
   //   const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
   //   const newUser = new User({ name, email, password });
   //   newUser.setPassword(password);
