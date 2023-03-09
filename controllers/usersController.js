@@ -1,5 +1,6 @@
 const fs = require("fs/promises");
 const path = require("path");
+const Jimp = require("jimp");
 
 const { User } = require("../schemas");
 const { HttpError, asyncCtrlWrapper } = require("../helpers");
@@ -16,11 +17,14 @@ const getCurrent = (req, res) => {
 
 const updateUser = async (req, res) => {
   const { _id, email } = req.user;
-  const { path: tmpDir, originalname } = req.file;
+  const { path: tempFile, originalname } = req.file;
   const fileName = `${_id}_${originalname}`;
 
   const tempUpload = path.join(__dirname, "../", "public", "avatars", fileName);
-  await fs.rename(tmpDir, tempUpload);
+  await Jimp.read(tempFile)
+    .then((img) => { img.resize(250, 250).write(tempFile) });
+
+  await fs.rename(tempFile, tempUpload);
   const cover = path.join("http://localhost:3001", "avatars", fileName);
   await User.findByIdAndUpdate(_id, { avatarUrl: cover });
 
