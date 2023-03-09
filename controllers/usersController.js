@@ -15,18 +15,18 @@ const getCurrent = (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-
-  const rootDir = __dirname.split("\\").slice(0, -1).join("\\");
+  const { _id, email } = req.user;
   const { path: tmpDir, originalname } = req.file;
-  const tempUpload = path.join(rootDir, "public", "avatars", originalname);
+  const fileName = `${_id}_${originalname}`;
+
+  const tempUpload = path.join(__dirname, "../", "public", "avatars", fileName);
   await fs.rename(tmpDir, tempUpload);
-  const cover = path.join('http://localhost:3001', "avatars", originalname);
-  const user = req.user;
-  await User.findByIdAndUpdate(user._id, { avatarUrl:cover });
+  const cover = path.join("http://localhost:3001", "avatars", fileName);
+  await User.findByIdAndUpdate(_id, { avatarUrl: cover });
 
   res.json({
     ResponseBody: {
-      email: user.email,
+      email,
       avatarUrl: cover,
     },
   });
