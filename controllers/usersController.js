@@ -1,3 +1,7 @@
+const fs = require("fs/promises");
+const path = require("path");
+const Jimp = require("jimp");
+
 const { User } = require("../schemas");
 const { HttpError, asyncCtrlWrapper } = require("../helpers");
 
@@ -7,6 +11,27 @@ const getCurrent = (req, res) => {
     ResponseBody: {
       email,
       subscription,
+    },
+  });
+};
+
+const updateUser = async (req, res) => {
+  const { _id, email } = req.user;
+  const { path: tempFile, originalname } = req.file;
+  const fileName = `${_id}_${originalname}`;
+
+  const tempUpload = path.join(__dirname, "../", "public", "avatars", fileName);
+  await Jimp.read(tempFile)
+    .then((img) => { img.resize(250, 250).write(tempFile) });
+
+  await fs.rename(tempFile, tempUpload);
+  const cover = path.join("http://localhost:3001", "avatars", fileName);
+  await User.findByIdAndUpdate(_id, { avatarUrl: cover });
+
+  res.json({
+    ResponseBody: {
+      email,
+      avatarUrl: cover,
     },
   });
 };
@@ -31,4 +56,5 @@ const changeSubscription = async (req, res) => {
 module.exports = {
   getCurrent: asyncCtrlWrapper(getCurrent),
   changeSubscription: asyncCtrlWrapper(changeSubscription),
+  updateUser: asyncCtrlWrapper(updateUser),
 };
