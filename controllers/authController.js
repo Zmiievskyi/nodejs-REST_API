@@ -16,14 +16,14 @@ const signupCtrl = async (req, res) => {
 
 const loginCtrl = async (req, res) => {
   const { email, password } = req.body;
-  const token = await login(email, password);
+  const {name, token} = await login(email, password);
   // res.json({ status: "success", data: { token } });
   res.json({
     RequestBody: {
       token,
       user: {
+        name,
         email,
-        password,
       },
     },
   });

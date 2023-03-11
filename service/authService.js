@@ -32,7 +32,7 @@ const login = async (email, password) => {
 
   const token = Jwt.sign(payload, SECRET, { expiresIn: "1d" });
   await User.findByIdAndUpdate(user._id, { token });
-  return token;
+  return {user: user.name, token};
   //   if (!user) {
   //     throw new Unauthorized(`We haven't any user with that ${email} email`);
   //   }
