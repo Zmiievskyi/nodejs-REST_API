@@ -31,8 +31,8 @@ const contactSchema = new Schema(
 contactSchema.post("save", handleSchemaValidationErrors);
 
 const joiContactSchema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
-  email: Joi.string().min(3).max(30).required(),
+  name: Joi.string().min(3).max(30),
+  email: Joi.string().min(3).max(30),
   phone: Joi.string().min(3).max(30).required(),
   favorite: Joi.bool().default(false),
 });

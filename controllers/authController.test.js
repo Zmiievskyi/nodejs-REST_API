@@ -21,7 +21,7 @@ describe("test signup controller", () => {
   afterEach(() =>
     mongoose.disconnect()
   );
-  test("test add user", async () => {
+  test("1 test add user", async () => {
     const response = await request(server).post("/api/auth/signup").send(mUser);
     expect(response.statusCode).toBe(200);
     const { user } = response.body.RequestBody;
@@ -30,4 +30,13 @@ describe("test signup controller", () => {
     expect(typeof user.email).toBe("string");
     expect(typeof user.password).toBe("string");
   });
+//   test("2 test add user without name", async () => {
+//     const response = await request(server).post("/api/auth/signup").send(mUserNoName);
+//     expect(response.statusCode).toBe(200);
+//     const { user } = response.body.RequestBody;
+//     expect(user.email).toBeTruthy();
+//     expect(user.password).toBeTruthy();
+//     expect(typeof user.email).toBe("string");
+//     expect(typeof user.password).toBe("string");
+//   });
 });
