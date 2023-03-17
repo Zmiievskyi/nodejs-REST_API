@@ -46,23 +46,24 @@ const update = async (req, res) => {
   );
   if (!refreshedContact) throw HttpError(404);
   res.json({
-    message: "Update complited",
+    message: "Update was complited",
     code: 200,
     contact: refreshedContact,
   });
 };
 
-const updateStatus = async (req, res) => {
+const updateFavoriteStatus = async (req, res) => {
   if (Object.keys(req.body).length < 1) {
-    throw HttpError(400, "missing field favorite");
+    throw HttpError(400, "The favorite field is missing");
   }
   const refreshedStatus = await service.updateStatusContact(
     req.params.contactId,
     req.body
   );
-  if (!refreshedStatus) throw HttpError(404, "not found");
+  if (!refreshedStatus)
+    throw HttpError(404, "The status update was unsuccessful.");
   res.json({
-    message: "Startus chanched",
+    message: "The status was updated",
     code: 200,
     contact: refreshedStatus,
   });
@@ -74,5 +75,5 @@ module.exports = {
   add: asyncCtrlWrapper(add),
   deleteById: asyncCtrlWrapper(deleteById),
   update: asyncCtrlWrapper(update),
-  updateStatus: asyncCtrlWrapper(updateStatus),
+  updateFavoriteStatus: asyncCtrlWrapper(updateFavoriteStatus),
 };

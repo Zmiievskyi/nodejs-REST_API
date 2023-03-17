@@ -10,9 +10,6 @@ const {
 
 const schema = require("../../schemas/contactModel");
 
-// const authMiddleware = require('../../middlewares');
-// router.use(authMiddleware);
-
 router.get("/", authMiddleware, ctrl.getAll);
 router.get("/:contactId", valiadateId, ctrl.getById);
 router.post(
@@ -26,7 +23,7 @@ router.put("/:contactId", valiadateId, ctrl.update);
 router.patch(
   "/:contactId/favorite",
   validateBody(schema.joiUpdateFavoriteSchema),
-  ctrl.update
+  ctrl.updateFavoriteStatus
 );
 
 module.exports = router;

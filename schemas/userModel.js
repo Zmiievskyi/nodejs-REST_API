@@ -11,7 +11,7 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
-      // required: [true, "Name is required"],
+      required: [true, "Name is required"],
     },
     password: {
       type: String,
@@ -31,7 +31,17 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+
     avatarUrl: String,
+
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      // required: [true, "Verify token is required"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -53,13 +63,22 @@ userSchema.methods.comparePassword = function (password) {
 
 const User = mongoose.model("user", userSchema);
 
-const joiUserSchema = Joi.object({
+const joiUserSignupSchema = Joi.object({
+  name: Joi.string().min(3).max(30).required(),
   email: Joi.string().min(3).max(30).required(),
   password: Joi.string().min(6).max(12).required(),
 });
-
+const joiUserLoginSchema = Joi.object({
+  email: Joi.string().min(3).max(30).required(),
+  password: Joi.string().min(6).max(12).required(),
+});
+const joiUserVerifySchema = Joi.object({
+  email: Joi.string().min(3).max(30).required(),
+});
 
 module.exports = {
-  joiUserSchema,
+  joiUserSignupSchema,
+  joiUserLoginSchema,
+  joiUserVerifySchema,
   User,
 };
